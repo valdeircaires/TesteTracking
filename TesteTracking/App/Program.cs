@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TesteTracking.Domain.Commmands;
+using TesteTracking.Service;
+
+namespace TesteTracking.App
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var contexto = new ContextTeste();
+            var uow = new UnityOfWork(contexto);
+            var repo = new ProdutoGrupoRepository(contexto);
+            var service = new ProdutoGrupoService(repo, uow);
+
+            var id = Guid.NewGuid();
+
+            service.Inserir(new ProdutoGrupoCommand(id, "TESTE"));
+
+            service.Atualizar(new ProdutoGrupoCommand(id, "TESTE DE ALTERACAO"));
+
+            service.Atualizar(new ProdutoGrupoCommand(id, "TESTE DE ALTERACAO 2"));
+
+            var grupo = service.ObterGrupoPorId(id);
+            if (grupo != null)
+                Console.WriteLine(grupo.NomeGrupo);
+
+            Console.ReadKey();
+        }
+    }
+}
